@@ -1,39 +1,54 @@
 package com.example.demo.Controllers;
 
+import com.example.demo.Entities.AuthenticationRequest;
+import com.example.demo.Entities.AuthenticationResponse;
 import com.example.demo.Entities.Employee;
 import com.example.demo.Repositories.EmployeeRepository;
-import org.apache.catalina.LifecycleState;
+import com.example.demo.Security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
-@RequestMapping("api/v1/employees")
+@RequestMapping("api/v1")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EmployeeController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     //get all employees
-    @GetMapping
+    @GetMapping("/employees")
     public List<Employee> getAllEmployees(){
         return employeeRepository.findAll();
     }
     //create employee
-    @PostMapping
+    @PostMapping("/employees")
     public  Employee createEmployee(@RequestBody Employee employee){
+        employee.setPassword((bCryptPasswordEncoder.encode(employee.getPassword())));
         return employeeRepository.save(employee);
     }
     //get employee by id
-    @GetMapping("/{id}")
+    @GetMapping("/employees/{id}")
     public Employee getEmployeeById(@PathVariable Long id){
         return employeeRepository.findById(id).get();
     }
 
     //update employee
-    @PutMapping("/{id}")
+    @PutMapping("/employees/{id}")
     public  Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee){
         Employee employee1 = employeeRepository.findById(id).get();
 
@@ -41,7 +56,13 @@ public class EmployeeController {
         employee1.setLastName(employee.getLastName());
         return employeeRepository.save(employee1);
 
-
     }
+    //delete employee
+    @DeleteMapping("/employees/{id}")
+    public void deleteEmployee(@PathVariable Long id){
+        Employee employee = employeeRepository.findById(id).get();
+         employeeRepository.delete(employee);
+    }
+
 
 }
