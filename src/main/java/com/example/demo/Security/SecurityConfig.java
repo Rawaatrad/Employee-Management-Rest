@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
@@ -29,9 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable(); //disable cross site request
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS ); //i want to use the jwt system
         //http.authorizeRequests().anyRequest().permitAll(); //allow everyone to be able to access this app
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/v1/employees").permitAll();
+        //http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/v1/employees").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/login").permitAll();
+        http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new JwtAuthenticationFilter(authenticationManager()));
+        http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
 
