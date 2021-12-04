@@ -1,21 +1,13 @@
 package com.example.demo.Controllers;
 
-import com.example.demo.Entities.AuthenticationRequest;
-import com.example.demo.Entities.AuthenticationResponse;
 import com.example.demo.Entities.Employee;
 import com.example.demo.Repositories.EmployeeRepository;
-import com.example.demo.Security.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 
@@ -26,8 +18,8 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    /*@Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;*/
 
 
     //get all employees
@@ -38,7 +30,7 @@ public class EmployeeController {
     //create employee
     @PostMapping("/employees")
     public  Employee createEmployee(@RequestBody Employee employee){
-        employee.setPassword((bCryptPasswordEncoder.encode(employee.getPassword())));
+        //employee.setPassword((bCryptPasswordEncoder.encode(employee.getPassword())));
         return employeeRepository.save(employee);
     }
     //get employee by id
