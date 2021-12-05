@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entities.Employee;
 import com.example.demo.Repositories.EmployeeRepository;
 
+import com.example.demo.services.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,8 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
     /*@Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;*/
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
 
 
     //get all employees
@@ -31,6 +34,7 @@ public class EmployeeController {
     @PostMapping("/employees")
     public  Employee createEmployee(@RequestBody Employee employee){
         //employee.setPassword((bCryptPasswordEncoder.encode(employee.getPassword())));
+        employee.setId(sequenceGeneratorService.generateSequence(Employee.SEQUENCE_NAME));
         return employeeRepository.save(employee);
     }
     //get employee by id
